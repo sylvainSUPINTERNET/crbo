@@ -1,0 +1,38 @@
+
+GET https://api.pro.coinbase.com/products/BTC-USD/stats
+
+{ "open":"34977.48",
+  "high":"35679.45",
+  "low":"30150",
+  "volume":"45646.70203384",
+  "last":"30373.21",
+  "volume_30day":"1027072.33957844"
+}
+
+
+>>> (data.last - data.open)/data.open*100
+>>> -13.163526932186093
+
+
+percent = ((float(ticker_new['price']) - float(ticker_old['price']))*100)/float(ticker_old['price'])
+
+
+-0,0093146562533587% = (2791.3 - 2791.56) * 100 /2791.3
+
+
+
+//  extract existing currencies ( crypto )
+import requests
+    
+uri = 'https://api.pro.coinbase.com/currencies'
+response = requests.get(uri).json()
+
+for i in range(len(response)):
+    if response[i]['details']['type'] == 'crypto':
+        print(response[i]['id'])
+
+// pairs 
+https://api.pro.coinbase.com/products
+
+// fiat
+https://api.coinbase.com/v2/currencies
