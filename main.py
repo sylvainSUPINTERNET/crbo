@@ -5,27 +5,27 @@ import json
 import asyncio
 
 from services.ws import add_coin_listener
+from services.ws_conn import WsConn
 
-
-ws_client = "";
-
-async def echo(websocket, path):
-    async for message in websocket:
-        print("MESSAGE")
-        await add_coin_listener(json.loads(message), websocket, ws_client=ws_client)
-        # await websocket.send(message)
+# Working for only one since this app is only one ws connection for me
+cl = WsConn()
 
 async def main():
-    print("main")
     async with websockets.serve(echo, "localhost", 8765):
         await asyncio.Future()  # run forever
 
 async def client():
     async with websockets.connect("wss://ws-feed.pro.coinbase.com") as websocket:
-        await websocket.send('{"type":"subscribe","channels":[{"name":"ticker","product_ids":["BTC-EUR"]}]}')
-        ws_client = websocket
-        data = await websocket.recv()
-        print(data)
+        cl.client = websocket # set to instance the ws connection to be able to send data / send data to the coinbase ws
+        while True: # run forever waiting for new data
+            data = await websocket.recv()
+            print(data)
+
+async def echo(websocket, path):
+    async for message in websocket:
+        print(cl.client)
+        await add_coin_listener(json.loads(message), websocket, ws_client=cl.client)
+
 
 loop = asyncio.get_event_loop()
 loop.create_task(main())
